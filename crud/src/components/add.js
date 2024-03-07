@@ -3,9 +3,14 @@ import React , {useState}from "react";
 import axios from "axios"
 
 import {Button,Container,Form} from 'react-bootstrap';
-import { useHref } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Add() {
+    const navigate = useNavigate();
+
 
     const [Name,setName]= useState("");
     const [email,setEmail]= useState("");
@@ -25,23 +30,36 @@ function Add() {
 
 
     const handleRegister = async (e)=>{
-        e.preventdefault()
+        e.preventDefault();
+
+        if(!Name || !email || !Password || !Phone || !Avatar){
+          toast(" Enter All Details ",{ type:"error" , autoClose: 2000})
+
+        }else{
         await axios
         .post("https://65e8396f4bb72f0a9c4ea40d.mockapi.io/crud", Data)
         .then((res)=>{
-            console.log(res)
-        })
-        .catch((err)=>{
-            console.log("Error :",err)
-        })
+          console.log(res)
+          if(res.status === 201){
+              toast(" Registered succesfully ",{ type:"success" , autoClose: 2000})
+
+          }
+      })
+      .catch((err)=>{
+          console.log("Error :",err)
+          if(err.response.status !== 201){
+              toast(" Error in register ",{ type:"error" , autoClose: 2000})
+
+          }
+      });
+
+      }
 
     };
 
-
-
-
-
-
+    const goToHome=()=>{
+      navigate("/")
+  }
 
 
 
@@ -55,10 +73,7 @@ function Add() {
         <Form.Label>Name</Form.Label>
         <Form.Control onChange={(e)=>{
             setName(e.target.value)
-
-
         }
-
         }
          type="text"
           placeholder="Enter Name"
@@ -115,6 +130,8 @@ function Add() {
 
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Avatar </Form.Label>
+
+        
         <Form.Control
         onChange={(e)=>{
             setAvatar(e.target.value)
@@ -123,15 +140,28 @@ function Add() {
         }
 
         }
+        type="file" name="avatar" placeholder="Enter Avatar"
         
-        type="avatar" placeholder="Enter Avatar " />
+        // type="avatar" placeholder="Enter Avatar " 
+        
+        />
       </Form.Group>
 
 
+      <div className="d-flex gap-3">
       <Button onClick={handleRegister} variant="primary" type="submit">
       Register
       </Button>
+
+      <Button onClick={goToHome} variant="primary" type="submit">
+      Back
+      </Button>
+      </div>
     </Form>
+    
+    <ToastContainer />
+
+
     </Container>
   );
 }
