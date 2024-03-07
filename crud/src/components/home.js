@@ -3,6 +3,7 @@ import React, {useState,useEffect} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -83,7 +84,7 @@ const handleDelete = async (id)=>{
         <Col key={profile.id}>
           <Card style={{ width: '18rem' }}>
             <p>{index + 1}</p>
-            <Card.Img variant="top" src={profile.avatar} />
+            <Card.Img variant="top" src={profile.avatar} className="rounded-Circle"/>
             <Card.Body>
               <Card.Title>{profile.name}</Card.Title>
               <Card.Text>{profile.email}</Card.Text>

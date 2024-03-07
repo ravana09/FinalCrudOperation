@@ -140,9 +140,9 @@ function Add() {
         }
 
         }
-        type="file" name="avatar" placeholder="Enter Avatar"
+        // type="file" name="avatar" placeholder="Enter Avatar"
         
-        // type="avatar" placeholder="Enter Avatar " 
+        type="avatar" placeholder="Enter your avatar url" 
         
         />
       </Form.Group>
