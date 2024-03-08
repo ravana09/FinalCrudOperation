@@ -70,16 +70,7 @@ app.delete("/delete/:id",async(req,res)=>{
 
 })
 
-
-
-
-
-
-
-
-
-
-
+//connection of db
 
 mongoose.connect('mongodb://localhost:27017/crudData')
 .then(()=>{
@@ -92,85 +83,6 @@ mongoose.connect('mongodb://localhost:27017/crudData')
 console.log(`Error fetch in db connection :${err}`)
 })
 
-
-
-
-
-
-
-
-
-// Connect to MongoDB
-// mongoose.connect('mongodb://localhost:27017/crudData', {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-// db.once('open', () => {
-//   console.log('Connected to MongoDB');
-// });
-
-// // Define Profile schema
-// const profileSchema = new mongoose.Schema({
-//   name: String,
-//   email: String,
-//   password: String,
-//   phoneNumber: String,
-//   avatar: String,
-// });
-
-// const Profile = mongoose.model('Profile', profileSchema);
-
-// // API endpoints
-// app.get('/api/profiles', async (req, res) => {
-//   try {
-//     const profiles = await Profile.find();
-//     res.json(profiles);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
-
-// app.post('/api/profiles', async (req, res) => {
-//   const profile = new Profile(req.body);
-//   try {
-//     const newProfile = await profile.save();
-//     res.status(201).json(newProfile);
-//   } catch (err) {
-//     res.status(400).json({ message: err.message });
-//   }
-// });
-
-// app.get('/api/profiles/:id', async (req, res) => {
-//   try {
-//     const profile = await Profile.findById(req.params.id);
-//     if (!profile) {
-//       return res.status(404).json({ message: 'Profile not found' });
-//     }
-//     res.json(profile);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
-
-// app.put('/api/profiles/:id', async (req, res) => {
-//   try {
-//     const profile = await Profile.findByIdAndUpdate(req.params.id, req.body, { new: true });
-//     res.json(profile);
-//   } catch (err) {
-//     res.status(400).json({ message: err.message });
-//   }
-// });
-
-// app.delete('/api/profiles/:id', async (req, res) => {
-//   try {
-//     await Profile.findByIdAndDelete(req.params.id);
-//     res.json({ message: 'Profile deleted successfully' });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
 
 
 
