@@ -26,144 +26,99 @@ function Add() {
         avatar:Avatar
     }
 
-    console.log("Data:",Data)
+    // console.log("Data:",Data)
 
 
-    const handleRegister = async (e)=>{
-        e.preventDefault();
+    const handleRegister = async (e) => {
+      e.preventDefault();
 
-        if(!Name || !email || !Password || !Phone || !Avatar){
-          toast(" Enter All Details ",{ type:"error" , autoClose: 2000})
-
-        }else{
-        await axios
-        .post("https://65e8396f4bb72f0a9c4ea40d.mockapi.io/crud", Data)
-        .then((res)=>{
-          console.log(res)
-          if(res.status === 201){
-              toast(" Registered succesfully ",{ type:"success" , autoClose: 2000})
-
+      if (!Name || !email || !Password || !Phone || !Avatar) {
+          toast("Enter All Details", { type: "error", autoClose: 2000 });
+      } else {
+          try {
+              const response = await axios.post("http://localhost:5000/create", Data);
+              if (response.data.success) {
+                  toast("Registered successfully", { type: "success", autoClose: 2000 });
+              }
+          } catch (error) {
+              console.error("Error:", error);
+              toast("Error in registration", { type: "error", autoClose: 2000 });
           }
-      })
-      .catch((err)=>{
-          console.log("Error :",err)
-          if(err.response.status !== 201){
-              toast(" Error in register ",{ type:"error" , autoClose: 2000})
-
-          }
-      });
-
       }
+  };
 
-    };
-
-    const goToHome=()=>{
-      navigate("/")
+  const goToHome = () => {
+      navigate("/");
   }
 
 
 
+ 
   return (
-    
     <Container>
         <h1 className="pb-3 text-center">Register Form</h1>
-    <Form className="">
+        <Form onSubmit={handleRegister}> 
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                    onChange={(e) => setName(e.target.value)}
+                    type="text"
+                    placeholder="Enter Name"
+                />
+            </Form.Group>
 
-    <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Name</Form.Label>
-        <Form.Control onChange={(e)=>{
-            setName(e.target.value)
-        }
-        }
-         type="text"
-          placeholder="Enter Name"
-           />
-      </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="email"
+                    placeholder="Enter email"
+                />
+                <Form.Text className="text-muted">
+                    We'll never share your email with anyone else.
+                </Form.Text>
+            </Form.Group>
 
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                    onChange={(e) => setPassword(e.target.value)}
+                    type="password"
+                    placeholder="Password"
+                />
+            </Form.Group>
 
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Phone number </Form.Label>
+                <Form.Control
+                    onChange={(e) => setPhone(e.target.value)}
+                    type="tel"
+                    placeholder="Enter Phone Number "
+                />
+            </Form.Group>
 
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
-        <Form.Control
-        onChange={(e)=>{
-            setEmail(e.target.value)
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Avatar </Form.Label>
+                <Form.Control
+                    onChange={(e) => setAvatar(e.target.value)}
+                    type="avatar"
+                    placeholder="Enter your avatar url"
+                />
+            </Form.Group>
 
+            <div className="d-flex gap-3">
+          <Button variant="primary" type="submit">
+            Register
+          </Button>
 
-        }
-
-        }
-        
-        type="email" placeholder="Enter email" />
-        <Form.Text className="text-muted">
-          We'll never share your email with anyone else.
-        </Form.Text>
-      </Form.Group>
-
-      
-      <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
-        <Form.Control  onChange={(e)=>{
-            setPassword(e.target.value)
-
-
-        }
-
-        }
-        
-        type="password" placeholder="Password" />
-      </Form.Group>
-
-
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Phone number </Form.Label>
-        <Form.Control 
-        onChange={(e)=>{
-            setPhone(e.target.value)
-
-
-        }
-
-        }
-        
-        type="tel" placeholder="Enter Phone Number " />
-      </Form.Group>
-
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Avatar </Form.Label>
-
-        
-        <Form.Control
-        onChange={(e)=>{
-            setAvatar(e.target.value)
-
-
-        }
-
-        }
-        // type="file" name="avatar" placeholder="Enter Avatar"
-        
-        type="avatar" placeholder="Enter your avatar url" 
-        
-        />
-      </Form.Group>
-
-
-      <div className="d-flex gap-3">
-      <Button onClick={handleRegister} variant="primary" type="submit">
-      Register
-      </Button>
-
-      <Button onClick={goToHome} variant="primary" type="submit">
-      Back
-      </Button>
-      </div>
-    </Form>
-    
-    <ToastContainer />
-
-
+          <Button onClick={goToHome} variant="primary" type="button">
+            Back
+          </Button>
+        </div>
+        </Form>
+        <ToastContainer />
     </Container>
-  );
+);
 }
 
 export default Add;

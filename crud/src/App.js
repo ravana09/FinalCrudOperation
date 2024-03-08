@@ -3,6 +3,8 @@ import Home from "./components/home";
 import Add from "./components/add";
 import Update from "./components/update";
 import NavBar from "./components/navBar";
+import './App.css';
+
 
 function App() {
   return (

@@ -1,6 +1,7 @@
-.App {
+/* .App {
   text-align: center;
-}
+  
+} */
 
 .App-logo {
   height: 40vmin;
@@ -35,6 +36,12 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+body{
+  margin: 0px;
+  padding: 0px;
+ background-color: linear-gradient(to left top, blue, red);
 }
 
 
