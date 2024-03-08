@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const randomstring = require("randomstring");
+const nodemailer =require("nodemailer")
 
 
 
@@ -83,7 +85,64 @@ mongoose.connect('mongodb://localhost:27017/crudData')
 console.log(`Error fetch in db connection :${err}`)
 })
 
+//email validation 
 
+// Temporary storage for OTPs (in a real-world scenario, use a database)
+const otpStorage = {};
+
+// Nodemailer configuration (replace with your email service provider settings)
+var transport = nodemailer.createTransport({
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "2ff6572b915291",
+      pass: "77482357d6b8fb"
+    }
+  });
+
+// Generate and send OTP
+app.post("/send-otp", (req, res) => {
+  const { email } = req.body;
+  const otp = randomstring.generate({ length: 6, charset: "numeric" });
+
+  // Save OTP to temporary storage
+  otpStorage[email] = otp;
+
+  // Email options
+  const mailOptions = {
+    from: "pradeep09sathish@gmail.com",
+    to: email,
+    subject: "OTP Verification",
+    text: `Your OTP is: ${otp}`,
+  };
+
+  // Send email
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error("Error sending email:", error);
+      res.status(500).json({ success: false, message: "Failed to send OTP" });
+    } else {
+      console.log("Email sent:", info.response);
+      res.status(200).json({ success: true, message: "OTP sent successfully" });
+    }
+  });
+});
+
+// Verify OTP
+app.post("/verify-otp", (req, res) => {
+  const { email, otp } = req.body;
+
+  // Retrieve OTP from temporary storage
+  const storedOtp = otpStorage[email];
+
+  if (otp === storedOtp) {
+    // OTP is valid
+    res.status(200).json({ valid: true, message: "OTP is valid" });
+  } else {
+    // OTP is invalid
+    res.status(400).json({ valid: false, message: "Invalid OTP" });
+  }
+})
 
 
 
