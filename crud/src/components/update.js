@@ -15,18 +15,24 @@ function Update() {
   const [Password, setPassword] = useState(recData.password);
   const [Phone, setPhone] = useState(recData.phoneNumber);
   const [Avatar, setAvatar] = useState(recData.avatar);
+  const [avatarFile, setAvatarFile] = useState(null);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.put(`http://localhost:5000/update`, {
-        id: recData._id, // Pass the ID of the profile being updated
-        name: Name,
-        email: email,
-        password: Password,
-        phoneNumber: Phone,
-        avatar: Avatar,
+      const formData = new FormData();
+      formData.append("id", recData._id);
+      formData.append("name", Name);
+      formData.append("email", email);
+      formData.append("password", Password);
+      formData.append("phoneNumber", Phone);
+      formData.append("avatar", avatarFile); // Append the avatar file
+
+      const response = await axios.put(`http://localhost:5000/update`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Set the content type to multipart/form-data
+        },
       });
 
       if (response.status === 200) {
@@ -42,14 +48,17 @@ function Update() {
     navigate("/");
   };
 
+  const handleFileChange = (e) => {
+    setAvatarFile(e.target.files[0]);
+    setAvatar(URL.createObjectURL(e.target.files[0]));
+  };
+
   return (
     <Container>
       <h1 className="pb-3 text-center">Update Form</h1>
       <Form onSubmit={handleUpdate}>
-
-
         <div>
-          <img src={recData.avatar} alt="" className="rounded-Circle " />
+          <img src={Avatar} alt="" className="rounded-Circle" style={{ width: "100px", height: "100px" }} />
         </div>
 
         <Form.Group className="mb-3" controlId="formBasicName">
@@ -98,10 +107,9 @@ function Update() {
         <Form.Group className="mb-3" controlId="formBasicAvatar">
           <Form.Label>Avatar</Form.Label>
           <Form.Control
-            type="avatar"
-            placeholder="Enter your Avatar URL"
-            value={Avatar}
-            onChange={(e) => setAvatar(e.target.value)}
+            type="file"
+            accept="image/*" // accept only image files
+            onChange={handleFileChange}
           />
         </Form.Group>
 

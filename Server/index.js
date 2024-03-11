@@ -1,22 +1,29 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const multer = require('multer');
 const randomstring = require("randomstring");
-const nodemailer =require("nodemailer")
-
-
+const nodemailer = require("nodemailer");
 
 require('dotenv').config();
 
-
-const port = 5000 || process.env.PORT
-
+const port = process.env.PORT || 5000;
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Multer configuration for file uploads
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './uploads/'); // Set destination folder for uploads
+  },
+  filename: function(req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname); // Set filename with current timestamp
+  }
+});
 
+const upload = multer({ storage: storage });
 
 // Define Profile schema
 const profileSchema = new mongoose.Schema({
@@ -25,80 +32,33 @@ const profileSchema = new mongoose.Schema({
   password: String,
   phoneNumber: Number,
   avatar: String,
-},{
-    timestamps:true
-}
-
-);
+}, {
+  timestamps: true
+});
 
 const Profile = mongoose.model('Profile', profileSchema);
 
-//reading data 
-app.get("/", async(req,res)=>{
-
-    const data = await Profile.find({})
-    res.json( {success: true , data: data })
-})
-
-//craete data 
-app.post("/create", async(req,res)=>{
-
-    console.log(req.body)
-    const data = new Profile(req.body)
-    await data.save()
-    res.json( {success: true , message: "Data has been saved succesfully ",Data:data })
-});
-
-
-//update data 
-app.put("/update", async(req,res)=>{
-    console.log(req.body)
-    const {id,...rest}=req.body;
-    console.log(rest)
-    const data= await Profile.updateOne({_id:id},rest)
-    res.json( {success: true , message: "Data has been updated  succesfully ", Data:data })
-
-})
-
-//delete data
-
-app.delete("/delete/:id",async(req,res)=>{
-    const id =req.params.id;
-    console.log(id)
-    const data =await Profile.deleteOne({_id:id})
-
-
-    res.json( {success: true , message: "Data has been deleted   succesfully ",Data:data })
-
-})
-
-//connection of db
-
+// MongoDB connection
 mongoose.connect('mongodb://localhost:27017/crudData')
-.then(()=>{
+  .then(() => {
     console.log('Connected to MongoDB');
     app.listen(port, () => {
-        console.log(`Server is running on port:http://localhost:${port}`);
-      });
-})
-.catch((err)=>{
-console.log(`Error fetch in db connection :${err}`)
-})
-
-//email validation 
-
-// Temporary storage for OTPs (in a real-world scenario, use a database)
-const otpStorage = {};
-
-// Nodemailer configuration (replace with your email service provider settings)
-var transport = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
-    auth: {
-      user: "2ff6572b915291",
-      pass: "77482357d6b8fb"
-    }
+      console.log(`Server is running on port: http://localhost:${port}`);
+    });
+  })
+  .catch((err) => {
+    console.log(`Error fetching db connection :${err}`);
   });
+
+// Email configuration
+const transporter = nodemailer.createTransport({
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525,
+  auth: {
+    user: "2ff6572b915291",
+    pass: "77482357d6b8fb"
+  }
+});
 
 // Generate and send OTP
 app.post("/send-otp", (req, res) => {
@@ -142,7 +102,23 @@ app.post("/verify-otp", (req, res) => {
     // OTP is invalid
     res.status(400).json({ valid: false, message: "Invalid OTP" });
   }
-})
+});
+
+// Create data with file upload
+app.post("/create", upload.single('avatar'), async (req, res) => {
+  try {
+    const { name, email, password, phoneNumber } = req.body;
+    const avatar = req.file ? req.file.path : null; // Check if avatar file exists in request
+
+    const data = new Profile({ name, email, password, phoneNumber, avatar });
+    await data.save();
+    res.json({ success: true, message: "Data has been saved successfully", Data: data });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ success: false, message: "Error in saving data" });
+  }
+});
+
 
 
 

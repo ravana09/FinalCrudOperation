@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-
 import { Button, Container, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -14,10 +12,9 @@ function Add() {
   const [email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [Phone, setPhone] = useState("");
-  const [Avatar, setAvatar] = useState("");
+  const [Avatar, setAvatar] = useState(null);
   const [showOTP, setShowOTP] = useState(false); // State to manage OTP input visibility
   const [OTP, setOTP] = useState(""); // State to store OTP entered by the user
-
 
   const Data = {
     name: Name,
@@ -27,36 +24,7 @@ function Add() {
     avatar: Avatar,
   };
 
-  // console.log("Data:",Data)
-
   const handleRegister = async (e) => {
-    e.preventDefault();
-
-    if (!Name || !email || !Password || !Phone || !Avatar) {
-      toast("Enter All Details", { type: "error", autoClose: 2000 });
-    } else {
-      try {
-        const response = await axios.post("http://localhost:5000/create", Data);
-        if (response.data.success) {
-          toast("Registered successfully", {
-            type: "success",
-            autoClose: 2000,
-          });
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        toast("Error in registration", { type: "error", autoClose: 2000 });
-      }
-    }
-  };
-
-  const goToHome = () => {
-    navigate("/");
-  };
-
-  ///validation of email
-
-  const emailValidation = async (e) => {
     e.preventDefault();
 
     if (!Name || !email || !Password || !Phone || !Avatar) {
@@ -98,10 +66,7 @@ function Add() {
         );
 
         if (registerResponse.data.success) {
-          toast("Registered successfully", {
-            type: "success",
-            autoClose: 2000,
-          });
+          toast("Registered successfully", { type: "success", autoClose: 2000 });
           navigate("/"); // Redirect to home page
         }
       } else {
@@ -113,10 +78,18 @@ function Add() {
     }
   };
 
+  const goToHome = () => {
+    navigate("/");
+  };
+
+  const handleAvatarChange = (e) => {
+    setAvatar(e.target.files[0]); // Set the avatar file when selected
+  };
+
   return (
     <Container>
       <h1 className="pb-3 text-center">Register Form</h1>
-      <Form onSubmit={handleRegister} >
+      <Form onSubmit={showOTP ? handleOTPVerification : handleRegister}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Name</Form.Label>
           <Form.Control
@@ -132,16 +105,16 @@ function Add() {
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             placeholder="Enter email"
-          />x
-          <Button onClick={handleRegister} variant="primary" type="submit" onSubmit={showOTP ? handleOTPVerification : handleRegister} >
+          />
+          {/* <Button onClick={handleRegister} variant="primary">
             Verify
-          </Button>
+          </Button> */}
           <Form.Text className="text-muted">
             We'll never share your email with anyone else.
           </Form.Text>
         </Form.Group>
 
-        {showOTP && (
+        {/* {showOTP && (
           <Form.Group className="mb-3" controlId="formBasicOTP">
             <Form.Label>OTP</Form.Label>
             <Form.Control
@@ -150,7 +123,11 @@ function Add() {
               placeholder="Enter OTP"
             />
           </Form.Group>
-        )}
+        )} */}
+
+
+
+
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
@@ -170,14 +147,16 @@ function Add() {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Avatar </Form.Label>
+        <Form.Group className="mb-3" controlId="formBasicAvatar">
+          <Form.Label>Avatar</Form.Label>
           <Form.Control
-            onChange={(e) => setAvatar(e.target.value)}
-            type="avatar"
-            placeholder="Enter your avatar url"
+            onChange={handleAvatarChange}
+            type="file"
+            accept="image/*"
           />
         </Form.Group>
+
+     
 
         <div className="d-flex gap-3">
           <Button variant="primary" type="submit">
@@ -195,3 +174,4 @@ function Add() {
 }
 
 export default Add;
+
