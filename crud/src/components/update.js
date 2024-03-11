@@ -10,11 +10,12 @@ function Update() {
   const location = useLocation();
   const recData = location.state;
 
-  const [Name, setName] = useState(recData.name);
-  const [email, setEmail] = useState(recData.email);
-  const [Password, setPassword] = useState(recData.password);
-  const [Phone, setPhone] = useState(recData.phoneNumber);
-  const [Avatar, setAvatar] = useState(recData.avatar);
+  const [Name, setName] = useState(recData.name || '');
+  const [email, setEmail] = useState(recData.email || '');
+  const [Password, setPassword] = useState(recData.password || '');
+  const [Phone, setPhone] = useState(recData.phoneNumber || '');
+  const [Avatar, setAvatar] = useState(recData.avatar || '');
+  
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -42,15 +43,23 @@ function Update() {
     navigate("/");
   };
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    setAvatar(URL.createObjectURL(file)); // Create a local URL for the selected file and set it as Avatar state
+};
+
+
   return (
     <Container>
       <h1 className="pb-3 text-center">Update Form</h1>
       <Form onSubmit={handleUpdate}>
 
 
-        <div>
-          <img src={recData.avatar} alt="" className="rounded-Circle " />
-        </div>
+      {Avatar && (
+          <div>
+            <img src={Avatar} alt="Avatar" style={{ width: "200px", height: "200px" }} />
+          </div>
+        )}
 
         <Form.Group className="mb-3" controlId="formBasicName">
           <Form.Label>Name</Form.Label>
@@ -95,15 +104,15 @@ function Update() {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formBasicAvatar">
-          <Form.Label>Avatar</Form.Label>
-          <Form.Control
-            type="avatar"
-            placeholder="Enter your Avatar URL"
-            value={Avatar}
-            onChange={(e) => setAvatar(e.target.value)}
-          />
-        </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <Form.Label>Avatar</Form.Label>
+                    <Form.Control
+                        onChange={handleAvatarChange} // Handle file change
+                        type="file" // Change input type to file\
+                        
+                    />
+                    
+                </Form.Group>
 
         <div className="d-flex gap-3">
           <Button variant="primary" type="submit">

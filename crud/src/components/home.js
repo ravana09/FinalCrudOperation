@@ -59,9 +59,9 @@ function Home() {
 
               <Card.Body style={{margin:"0 auto"}}>
                 <Card.Title>{profile.name}</Card.Title>
-                <Card.Text>{profile.email}</Card.Text>
-                <Card.Text>{profile.phoneNumber}</Card.Text>
-                <Card.Text>{profile.password}</Card.Text>
+                <Card.Text> Email :{profile.email}</Card.Text>
+                <Card.Text> Phone:{profile.phoneNumber}</Card.Text>
+                {/* <Card.Text>{profile.password}</Card.Text> */}
                 <div className="d-flex gap-3">
                   <Button
                     variant="primary"

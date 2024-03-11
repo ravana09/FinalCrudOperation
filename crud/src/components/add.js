@@ -16,7 +16,7 @@ function Add() {
     const [email,setEmail]= useState("");
     const [Password,setPassword]= useState("");
     const [Phone,setPhone]= useState("");
-    const [Avatar,setAvatar]= useState("");
+    const [Avatar, setAvatar] = useState(null);
 
     const Data ={
         name:Name,
@@ -36,7 +36,11 @@ function Add() {
           toast("Enter All Details", { type: "error", autoClose: 2000 });
       } else {
           try {
-              const response = await axios.post("http://localhost:5000/create", Data);
+            const response = await axios.post("http://localhost:5000/create", Data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
               if (response.data.success) {
                   toast("Registered successfully", { type: "success", autoClose: 2000 });
               }
@@ -51,6 +55,10 @@ function Add() {
       navigate("/");
   }
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    setAvatar(URL.createObjectURL(file)); // Create a local URL for the selected file and set it as Avatar state
+};
 
 
  
@@ -58,6 +66,11 @@ function Add() {
     <Container>
         <h1 className="pb-3 text-center">Register Form</h1>
         <Form onSubmit={handleRegister}> 
+          {Avatar && (
+          <div>
+            <img src={Avatar} alt="Avatar" style={{ width: "200px", height: "200px" }} />
+          </div>
+        )}
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Name</Form.Label>
                 <Form.Control
@@ -98,13 +111,16 @@ function Add() {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Avatar </Form.Label>
-                <Form.Control
-                    onChange={(e) => setAvatar(e.target.value)}
-                    type="avatar"
-                    placeholder="Enter your avatar url"
-                />
-            </Form.Group>
+                    <Form.Label>Avatar</Form.Label>
+                    <Form.Control
+                        onChange={handleAvatarChange} // Handle file change
+                        type="file" // Change input type to file\
+                        
+                    />
+                    
+                </Form.Group>
+                  {/* Display the image */}
+      
 
             <div className="d-flex gap-3">
           <Button variant="primary" type="submit">
